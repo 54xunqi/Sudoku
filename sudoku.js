@@ -8,9 +8,7 @@
  * 4 5 6
  * 7 8 9
  */
-
 //how to play game instruction
-
 function help(){
   window.open(
       "https://sudoku.com/how-to-play/sudoku-rules-for-complete-beginners/", "_blank");
@@ -31,10 +29,8 @@ var sudoku = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
-
 var answer = [[], [], [], [], [], [], [], [], []];
 var table = [[], [], [], [], [], [], [], [], []];
-
 function checkColumn(col, x) {
   for (var i = 0; i < 9; i++) {
     if (sudoku[i][col] === x) {
@@ -44,7 +40,6 @@ function checkColumn(col, x) {
   // console.log("check column true");
   return true;
 }
-
 function checkRow(row, x) {
   for (var j = 0; j < 9; j++) {
     if (sudoku[row][j] === x) {
@@ -54,7 +49,6 @@ function checkRow(row, x) {
   // console.log("check row true");
   return true;
 }
-
 function checkBlock(row, col, x) {
   var startRow = Math.floor(row / 3) * 3;
   var startCol = Math.floor(col / 3) * 3;
@@ -68,11 +62,9 @@ function checkBlock(row, col, x) {
   // console.log("check block true");
   return true;
 }
-
 function check(i, j, x) {
   return checkRow(i, x) && checkColumn(j, x) && checkBlock(i, j, x);
 }
-
 function columnOK(col) {
   var sum = 0;
   for (var i = 0; i < 9; i++) {
@@ -80,7 +72,6 @@ function columnOK(col) {
   }
   return sum === 45;
 }
-
 function columnsOK() {
   for (var j = 0; j < 9; j++) {
     if (!columnOK(j)) {
@@ -89,7 +80,6 @@ function columnsOK() {
   }
   return true;
 }
-
 function rowOK(row) {
   var sum = 0;
   for (var j = 0; j < 9; j++) {
@@ -97,7 +87,6 @@ function rowOK(row) {
   }
   return sum === 45;
 }
-
 function rowsOK() {
   for (var i = 0; i < 9; i++) {
     if (!rowOK(i)) {
@@ -106,7 +95,6 @@ function rowsOK() {
   }
   return true;
 }
-
 function blockOK(n) {
   var startRow = Math.floor((n - 1) / 3) * 3;
   var startCol = (n - 1) % 3 * 3;
@@ -118,7 +106,6 @@ function blockOK(n) {
   }
   return sum === 45;
 }
-
 function blocksOK() {
   for (var i = 1; i <= 9; i++) {
     if (!blockOK(i)) {
@@ -127,11 +114,9 @@ function blocksOK() {
   }
   return true;
 }
-
 function sudokuOK() {
   return columnsOK() && rowsOK() && blocksOK();
 }
-
 function tryit(i, j) {
   // console.log("i: " + i + " j: " + j);
   if (i >= 9) {
@@ -162,7 +147,6 @@ function tryit(i, j) {
   }
   return false;
 }
-
 /**
  * 将 1-9 随机排序后，填充到 n 号 block 中
  */
@@ -176,7 +160,6 @@ function setBlockRandomly(n) {
     }
   }
 }
-
 /**
  * 将游戏面板的 DOM Element 保存到一个数组里
  */
@@ -189,7 +172,6 @@ function bindTable() {
     }
   }
 }
-
 /**
  * 把二维数组 a 中的数据设置到游戏面板上
  */
@@ -204,7 +186,6 @@ function setTable(a) {
     }
   }
 }
-
 function createSudoku() {
   clear(sudoku); // 把 sudoku 的值都赋值为 0
   // 随机填充编号为 3, 5, 7 的 block
@@ -217,7 +198,6 @@ function createSudoku() {
   var success = tryit(0, 0);
   return success;
 }
-
 function clear(arr) {
   for (var i = 0; i < 9; i++) {
     for (var j = 0; j < 9; j++) {
@@ -225,7 +205,6 @@ function clear(arr) {
     }
   }
 }
-
 /**
  * 复制一个 Numeric 型的二维数组
  */
@@ -238,7 +217,6 @@ function copy(arr) {
   }
   return a;
 }
-
 function createGame() {
   while (!createSudoku());
   // 保存答案
@@ -255,4 +233,89 @@ function easy() {
   difficulty = 3;
 }
 //设置难度为困难
-functio
+//设置难度为困难
+function hard() {
+  difficulty = 5;
+}
+// 设置难度为变态
+function disgust() {
+  difficulty = 7;
+}
+// 换一个数独
+function change() {
+  createGame();
+  setTable(sudoku);
+}
+// 查看答案
+function showAnswer() {
+  setTable(answer);
+  endTimer();
+}
+// 处理输入
+function onInput(i, j) {
+  var inputElement = table[i][j].firstElementChild;
+  var value = parseInt(inputElement.value);
+  // 检验数据是否合法
+  if (check(i, j, value)) {
+    sudoku[i][j] = value;
+    // table[i][j].innerHTML = value;
+  } else {
+    alert('Wrong Answer, Please change to another number');
+    inputElement.value = "";
+  }
+  // 检查数独是否完成
+  if (sudokuOK()) {
+    gameOver();
+  }
+}
+var timeStart;
+var countTime = false;
+var timeArea;
+var count = 0;
+var timerId = -1;
+function startTimer() {
+  timeStart = new Date();
+  countTime = true;
+  count = 0;
+  timeArea.innerHTML =  "00 : 00 : 00";
+  timerId = setTimeout(timer, 1000);
+  console.log(timerId);
+}
+function timer() {
+  count++;
+  var h = pad(parseInt(count / 3600));
+  var m = pad(parseInt(count / 60));
+  var s = pad(parseInt(count % 60));
+  timeArea.innerHTML = h + " : " + m + " : " + s;
+  if (countTime) {
+    timerId = setTimeout(timer, 1000);
+  }
+}
+function pad(i) {
+  if (i < 10) {
+    return "0" + i;
+  }
+  return i;
+}
+function endTimer() {
+  countTime = false;
+  clearTimeout(timerId);
+  console.log(timerId);
+}
+function gameStart() {
+  endTimer();
+  change();
+  startTimer();
+}
+function gameOver() {
+  endTimer();
+  var restart = confirm('Congratulations! You have finished this sudoku, click OK to start a new Game');
+  if(restart) {
+    gameStart();
+  }
+}
+(function loading() {
+  bindTable();
+  timeArea = document.getElementById("timer");
+  gameStart();
+})();
