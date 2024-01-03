@@ -251,6 +251,8 @@ function disgust() {
 }
 // 换一个数独
 function change() {
+ currentSessionId = generateSessionId();
+    updateUrlWithSessionId(currentSessionId);
 createGame();
 setTable(sudoku);
 }
